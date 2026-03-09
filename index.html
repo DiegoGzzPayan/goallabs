@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <link rel="icon" href="LOGO.png" type="image/png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GOAL Interfaces</title>
+    <style>
+        /* Estilos Generales y Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #2c3e50; /* Fondo oscuro para resaltar el celular */
+        }
+
+        /* Contenedor del Celular */
+        .phone-frame {
+            width: 340px;
+            height: 720px;
+            background-color: #fcebc0; /* Color beige/amarillo de los mockups */
+            border: 14px solid #111;
+            border-radius: 45px;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Notch y Barra Superior */
+        .notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 25px;
+            background-color: #111;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+            z-index: 100;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 20px 5px 20px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #000;
+            z-index: 90;
+            position: relative;
+        }
+
+        /* Contenedor de las pantallas */
+        .screen-container {
+            flex-grow: 1;
+            position: relative;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-bottom: 70px; /* Espacio para el navbar */
+        }
+
+        /* Ocultar barra de scroll en Webkit */
+        .screen-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Pantallas */
+        .screen {
+            display: none;
+            padding: 15px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .screen-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #000;
+            margin-top: 10px;
+        }
+
+        /* Elementos de UI Comunes */
+        .card {
+            background-color: #fff;
+            border: 1px solid #000;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .input-field {
+            width: 80%;
+            padding: 8px;
+            border: 1px solid #000;
+            border-radius: 4px;
+            background: transparent;
+        }
+
+        .line-input {
+            border: none;
+            border-bottom: 1px solid #000;
+            background: transparent;
+            width: 100%;
+            outline: none;
+            padding: 2px 0;
+        }
+
+        .btn {
+            background-color: #fff;
+            border: 1px solid #000;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            text-align: center;
+            display: inline-block;
+            box-shadow: 1px 1px 0px #000;
+        }
+
+        .btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 0px 0px 0px #000;
+        }
+
+        .btn-full {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        /* --- Estilos Específicos de Pantallas --- */
+        
+        /* Gráficas (Dashboard) */
+        .pie-chart {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(#4CAF50 0% 80%, #FF9800 80% 95%, #F44336 95% 100%);
+            border: 2px solid transparent;
+        }
+        
+        .small-pie {
+            width: 50px;
+            height: 50px;
+            margin: 10px auto;
+        }
+        .pie-lab1 { background: conic-gradient(#4CAF50 0% 90%, #FF9800 90% 100%); }
+        .pie-lab2 { background: conic-gradient(#4CAF50 0% 83%, #F44336 83% 100%); }
+        .pie-lab3 { background: conic-gradient(#4CAF50 0% 88%, #F44336 88% 100%); }
+
+        .legend { font-size: 11px; line-height: 1.5; }
+        .legend span { display: inline-block; width: 10px; height: 10px; margin-right: 5px; }
+        .bg-green { background-color: #4CAF50; }
+        .bg-orange { background-color: #FF9800; }
+        .bg-red { background-color: #F44336; }
+
+        .labs-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 5px;
+        }
+        
+        .lab-card {
+            background: #fff;
+            border: 1px solid #000;
+            border-radius: 5px;
+            padding: 10px 5px;
+            text-align: center;
+            flex: 1;
+            font-size: 10px;
+        }
+
+        .report-list ul {
+            list-style: none;
+            font-size: 12px;
+            line-height: 1.8;
+            padding-left: 10px;
+        }
+        .report-list li::before {
+            content: "• ";
+            font-weight: bold;
+        }
+
+        /* Tags de hardware (Incidencias) */
+        .tag-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .tag {
+            border: 1px solid #000;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            color: #3f51b5;
+        }
+
+        .upload-box {
+            border: 1px solid #000;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px 0;
+            background: #fff;
+        }
+
+        /* --- Barra de Navegación Inferior --- */
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 65px;
+            border-top: 1.5px solid #000;
+            background-color: #fcebc0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            display: none; /* Oculto en login */
+        }
+
+        .nav-item {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+            stroke: #111;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .nav-item.active {
+            background-color: #3e3e3e;
+        }
+        .nav-item.active svg {
+            stroke: #fcebc0;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="phone-frame">
+    <div class="notch"></div>
+    <div class="status-bar">
+        <span>&nbsp;</span>
+        <span id="clock">6:07</span>
+    </div>
+
+    <div class="screen-container">
+        
+        <div id="login" class="screen active" style="padding-top: 60px;">
+            <div style="text-align: center; margin-bottom: 40px;">
+                <div style="width: 80px; height: 80px; background: #fff; border: 2px solid #000; border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; box-shadow: 4px 4px 0px #000;">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+                </div>
+                <h1 style="font-size: 42px; letter-spacing: -1px; margin-bottom: 0; line-height: 1;">GOAL</h1>
+                <div style="width: 40px; height: 4px; background: #000; margin: 8px auto;"></div>
+                <p style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #333;">
+                    Gestión Operativa de<br>Administración de Laboratorios
+                </p>
+            </div>
+            
+            <div class="card" style="box-shadow: 6px 6px 0px #3e3e3e; padding: 25px 20px;">
+                <div class="input-group">
+                    <label style="text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px;">Identificador de Usuario</label>
+                    <div style="position: relative;">
+                        <span style="position: absolute; left: 10px; top: 8px;">👤</span>
+                        <input type="text" class="input-field" placeholder="Ej. SOPORTE-01" style="width: 100%; padding-left: 35px; border-width: 2px;">
+                    </div>
+                </div>
+
+                <div class="input-group" style="margin-bottom: 25px;">
+                    <label style="text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px;">Contraseña de Acceso</label>
+                    <div style="position: relative;">
+                        <span style="position: absolute; left: 10px; top: 8px;">🔒</span>
+                        <input type="password" class="input-field" placeholder="••••••••" style="width: 100%; padding-left: 35px; border-width: 2px;">
+                    </div>
+                </div>
+                
+                <button class="btn btn-full" onclick="login()" style="background: #3e3e3e; color: #fff; padding: 12px; font-size: 16px; border-radius: 8px; box-shadow: 4px 4px 0px #666;">
+                    INGRESAR AL SISTEMA
+                </button>
+                
+                <p style="text-align: center; font-size: 10px; margin-top: 20px; color: #666; font-weight: bold; cursor: pointer;">
+                    ¿Olvidaste tus credenciales? <span style="text-decoration: underline; color: #3e3e3e;">Click aquí</span>
+                </p>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <p style="font-size: 9px; font-weight: bold; color: rgba(0,0,0,0.5);">DAGP/KNLG</p>
+            </div>
+        </div>
+
+        <div id="dashboard" class="screen">
+            <h2 class="screen-title">Inicio</h2>
+            
+            <div class="card" style="display: flex; align-items: center; justify-content: space-between;">
+                <div style="text-align: center; width: 100%;">
+                    <div style="font-weight: bold; font-size: 14px; margin-bottom: 10px;">Estado de Activos Totales</div>
+                    <div style="display: flex; align-items: center; justify-content: space-around;">
+                        <div class="pie-chart"></div>
+                        <div class="legend" style="text-align: left;">
+                            <div><span class="bg-green"></span>Operativos (145)</div>
+                            <div><span class="bg-orange"></span>Con Fallas (20)</div>
+                            <div><span class="bg-red"></span>Fuera de Servicio (5)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="labs-container mb-15">
+                <div class="lab-card">
+                    <b>Lab 1</b><br>50 Equipos<br><span style="color:#F44336">(3 Fallas)</span>
+                    <div class="pie-chart small-pie pie-lab1"></div>
+                </div>
+                <div class="lab-card">
+                    <b>Lab 2</b><br>60 Equipos<br><span style="color:#F44336">(10 Fallas)</span>
+                    <div class="pie-chart small-pie pie-lab2"></div>
+                </div>
+                <div class="lab-card">
+                    <b>Lab 3</b><br>60 Equipos<br><span style="color:#F44336">(7 Fallas)</span>
+                    <div class="pie-chart small-pie pie-lab3"></div>
+                </div>
+            </div>
+
+            <div style="margin-top: 15px; padding: 0 5px;" class="report-list">
+                <b style="font-size: 14px;">Reportes recientes</b>
+                <ul>
+                    <li>N23 - Lab 2 - <b>Ver detalles...</b></li>
+                    <li>N31 - Lab 3 - <b>Ver detalles...</b></li>
+                    <li>N16 - Lab 1 - <b>Ver detalles...</b></li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="catalogo" class="screen">
+            <h2 class="screen-title">Catálogo</h2>
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                <input type="text" class="input-field" placeholder="Buscar S/N o Equipo...">
+                <button class="btn">🔍</button>
+            </div>
+
+            <div class="card" style="padding: 10px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <b>PC-L1-05</b>
+                        <p style="font-size: 12px; margin: 3px 0;">Dell Optiplex 3020</p>
+                        <span class="tag" style="color: #4CAF50; border-color: #4CAF50; font-size: 10px;">Operativo</span>
+                    </div>
+                    <button class="btn" style="font-size: 10px;">Ver detalle</button>
+                </div>
+            </div>
+
+            <div class="card" style="padding: 10px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <b>MON-L2-12</b>
+                        <p style="font-size: 12px; margin: 3px 0;">HP EliteDisplay</p>
+                        <span class="tag" style="color: #FF9800; border-color: #FF9800; font-size: 10px;">En Revisión</span>
+                    </div>
+                    <button class="btn" style="font-size: 10px;">Ver detalle</button>
+                </div>
+            </div>
+            
+            <button class="btn btn-full" style="margin-top: 20px;">+ Agregar Equipo</button>
+        </div>
+
+        <div id="mantenimiento" class="screen">
+            <h2 class="screen-title">Incidencias</h2>
+            
+            <div style="font-size: 14px; margin-bottom: 10px;">
+                ID Producto: <input type="text" value="111" style="width: 50px; border:1px solid #000; padding:2px;">
+            </div>
+
+            <div class="tag-group">
+                <span class="tag">Mouse</span>
+                <span class="tag">Teclado</span>
+                <span class="tag">CPU</span>
+            </div>
+
+            <div style="font-size: 12px; margin-bottom: 10px;">
+                Otro: <input type="text" class="line-input" style="width: 200px;">
+            </div>
+
+            <div style="font-size: 12px; margin-bottom: 10px;">
+                Motivo: <input type="text" class="line-input" style="width: 180px;">
+            </div>
+
+            <div style="font-size: 12px; margin-bottom: 10px; display: flex; align-items: center;">
+                Laboratorio: 
+                <select style="border:1px solid #000; padding: 2px; margin-left: 5px;">
+                    <option>3</option>
+                    <option>2</option>
+                    <option>1</option>
+                </select>
+            </div>
+
+            <div style="font-size: 12px; margin-bottom: 10px;">
+                Fecha: <input type="text" value="02/09/26" style="border:1px solid #000; padding:2px; width: 80px;"> 📅
+            </div>
+
+            <div style="font-size: 12px; margin-bottom: 15px;">
+                Hora: <b>08:36 a.m.</b>
+            </div>
+
+            <div style="font-size: 12px; margin-bottom: 15px;">
+                Nombre de quien reporta:
+                <input type="text" class="line-input">
+            </div>
+
+            <div style="text-align: center; margin-top: 15px; border-top: 1px solid #000; padding-top: 10px;">
+                <p style="font-size: 12px;">evidencia:</p>
+                <div class="upload-box">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: center; gap: 10px;">
+                <button class="btn">Hacer reporte</button>
+                <button class="btn">Imprimir</button>
+            </div>
+        </div>
+
+        <div id="reportes" class="screen">
+            <h2 class="screen-title">Generar Reporte</h2>
+            
+            <div class="card">
+                <div class="input-group">
+                    <label>Tipo de Reporte</label>
+                    <select class="input-field">
+                        <option>Auditoría de Activos</option>
+                        <option>Historial de Fallas</option>
+                        <option>Vales de Salida</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Filtro por Laboratorio</label>
+                    <select class="input-field">
+                        <option>Todos los laboratorios</option>
+                        <option>Laboratorio 1</option>
+                        <option>Laboratorio 2</option>
+                        <option>Laboratorio 3</option>
+                    </select>
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                    <div class="input-group" style="flex: 1;">
+                        <label>Desde</label>
+                        <input type="date" class="input-field">
+                    </div>
+                    <div class="input-group" style="flex: 1;">
+                        <label>Hasta</label>
+                        <input type="date" class="input-field">
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <button class="btn btn-full" style="background-color: #d32f2f; color: white; border-color: #d32f2f;">Exportar PDF</button>
+                <button class="btn btn-full" style="background-color: #2e7d32; color: white; border-color: #2e7d32;">Exportar Excel</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="bottom-nav" id="navbar">
+        <div class="nav-item active" onclick="navTo('dashboard', this)">
+            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        </div>
+        <div class="nav-item" onclick="navTo('catalogo', this)">
+            <svg viewBox="0 0 24 24"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+        </div>
+        <div class="nav-item" onclick="navTo('mantenimiento', this)">
+            <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        </div>
+        <div class="nav-item" onclick="navTo('reportes', this)">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        </div>
+    </div>
+</div>
+
+<script>    // Función para Iniciar Sesión y mostrar la interfaz
+    function login() {
+        document.getElementById('login').classList.remove('active');
+        document.getElementById('dashboard').classList.add('active');
+        document.getElementById('navbar').style.display = 'flex';
+    }
+
+    // Función para Navegar entre pantallas
+    function navTo(screenId, element) {
+        // Ocultar todas las pantallas
+        const screens = document.querySelectorAll('.screen');
+        screens.forEach(s => s.classList.remove('active'));
+
+        // Mostrar pantalla seleccionada
+        document.getElementById(screenId).classList.add('active');
+
+        // Actualizar icono activo en el menú
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => item.classList.remove('active'));
+        element.classList.add('active');
+    }
+</script>
+
+</body>
+</html>
